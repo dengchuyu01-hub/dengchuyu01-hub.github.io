@@ -8,77 +8,26 @@ concurrency:
   group: portfolio-pages
   cancel-in-progress: false
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
-    environment: github-pages
     permissions:
-      contents: write
-      pages: write
-      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - name: Import the verified portfolio snapshot on first run
-        run: |
-          if [ -f site/index.html ]; then exit 0; fi
-          python3 - <<'PY'
-          import base64
-          import gzip
-          import hashlib
-          import pathlib
-          import subprocess
-          from concurrent.futures import ThreadPoolExecutor
-          from urllib.parse import quote
-
-          manifest = 'H4sIAAAAAAACA42Y65biKhCF//e74DSX9PQ8DklKwwwJOUDMeJ7+EKLGy0bPWr1arL0p6yOAgq7dFNmsI/nGWedZ447kdzPV44detF0Xe/uhzfnVR/bJd7/Hw9oUW1NuTbU1q635tTV/bs3vS3N2/k/4Ueu+do7V1oTAYjf1dVl/UMhbM6T6p9ESM9ZOIXodjRtgnqIb+tKfNYcuvkh1sdyLjd4TG/UU3pdUsD6Y3EhDpw80MG/GVHtg3rl9+k8BVveyQ9maLY11UxtYqsRZ+y75c4+iN8lEMdn+nFjviuPxqkPRGt1MPhsbE09v8t6bi7a8PC5ssx7a9O51YtDj3jummGa6d8MhpSJmSR8JznjsRJ67tfP5XU72YHxhafUpvM2zmJCcKt2f2J40nplPJiibGO1lWZST3LiQ/s9kKKaZ09PwopRbF9KDdTPT+/RkB4enLPI9OLq0ts2YsPvJv90Syu4HnwvLfPv8xGGOwwKHJQ4rHK5w+AuHf+LwNw7/gmGOKTmm5JiSY0qOKTmm5JiSY0qOKTmmFJhSYEqBKQWmFJhSYEqBKQWmFJhSYEqJKSWmlJhSYkqJKSWmlJhSYkqJKSWmVJhSYUqFKRWmVJhSYUqFKRWmVJhSYcoKU1aYssKUFaasMGWFKStMWT1Q5g33adM8RzmMChiVMKpgtILRLxjF9X7D6C8U5ZCNQzYO2Thk45CNQzYO2Thk45CNQzYB2QRkE5BNQDYB2QRkE5BNQDYB2QRkk5BNQjYJ2SRkk5BNQjYJ2SRkk5BNQjYF2RRkU5BNQTYF2RRkU5BNQTYF2RRkqyBbBdkqyFZBtgqyVZCtgmyPe18+oATTUvlc+2C5F/91dEpHSNN0IerD2x+yL+zZWLuoB9Noy8LozeH8ifkW4irtmhA+Gnc5KLTUOP8j31GwE9nlN3edXsLa66z69HteHwZnjb6N19a5/ty3ntqStPe6p1BSl9OeGQ4lOZ0mmj8l0dMxjS0xHa0O70y4Qh/LQrFw/6psXy7avy/Z/4+CL4YxNQzNzyZqp2adRDDHJpcIN0eRc7MUaDfDG+ZnI6x6WQIvlBJKFosUWS0AZO1N7Xeeh+I2Lmusbm6lMA3DifWkWzfvwvGyDHO2VptgLiTUmui8OS/bLePB63Zam+tV47KWN/npJvJOXi8h98b25y3lckDevM/irh/Vx97mq56D9i0NuaT7yO/wcdDWkj8tzY68Yyuq1fO6RZmhpb9rAdt+2Osx5Gy5kXqOOnZZSQ0TAnlDacAnqsn7E2um86YG1blzlp70Rg+tTY9xaDrnl89ww53cuTRcadRg8k3FyS31y4MAPVcF9/I6jGWgTcW9l41/Lne/kW/7U0xfDnnq5mHuXHQsPUId81vnUy+TdsQ0mOvwXyLXi70tcv0KuYa65fvjPjRcn/E1NGvf54inMLohmCPlZx/iya6tSHq5CO3v36QCU4IjWTam1UTnZ5iXTJotlqJpws0MzgJcB4uSZ+B/MqFrzbYXAAA='
-          files = gzip.decompress(base64.b64decode(manifest)).decode().splitlines()
-          origin = 'https://chuyudeng.dengchuyu01.chatgpt.site/'
-
-          expected_prefixes = base64.b64decode('7D1R321tQrujplAnXrtvIf4d7pBeowxk1xLRKH2gTYjeDBWBx/Vo57xAHyJBhLgkld1XBGW/WIcHGSl6DgyvpIAJzmx7VIyA2Oxzv/EkLPbzdU94VHuiQovQLRrnGdkEanb/xQntjBl2rl7Z/10DQJv/ywoUqIZWwppCpb/j+Mw6k10S0Hc4LyzF1D+PQwCBw1KSo8XNYGJijXylPR2UocYRrGHmNA3W0dXQWZ5vWHeHcllRSwTGVBLsAJqQU/qEzeCovPKeN+nQJFESNoruBWJs08IYVI8PrtDcY9AvVppYlVnSkMA3WP38tawLwEheDvps+pwqE1O8b4w345k9rI/ikM94+34tQoIaO1AFnitlUFBHx3yfkwV5wkS9v6QiTnPZYwRDF3jKjG8yJTcEwet7PGmv2pVxsFe7rfyAjdbb4MS+vyL+GhhdfVDrhbhkxqYeqpValHEDY3umKSAbboJUA0q5aHXAdUUipfyJ5uGKTdWpQOjjtZzhfrxDUnlQ9b0t+YHm6Pua9vvErEw3fTb19EBMrJRQSKyGRq6qLKMHo7gWKOKSbhoRe9V3IE17YJteGGWf++wEF1D5yqryg0Wq8EB0fGMy9SJNdhyxNuuibX3qATlo3qTpoOujradIKa5RAqBaFfQxbfW/ne0WsyZME/RrM5CvpEJc3hlrs5h9zDdF99xg/6QhaXOXhyJmNRhfanLRDT9jhb1uTGN73nfHRrVHX4ush1lZ43zVTEYV6wwgQ3RfxN/i/6fj7TowdMBgEAe0nMtriRIFj1OvudSjoxfNfQSSbRzxqeVmA1kK37r34vNjKGd/WvgXFVxLDQt5MaHKsXXRqmuTpw03I363ACvZA4qX+msWYqs2IcyzBpT7xeFDE1w4EnTDzl5vr/TgDbG4aVQmfBxmduZHhy3ehxsCK4/Tb2YJHaye8dhEc4kFXYcOttzxmovhlxLhNWH64MCU+8U/4uMLsDiNWnJphNIoUhBrj1r8qZXzm8pcXISqrZAWVxYUq22qDHD4uMBUKssuzpbspRTj37B2BsIfhWEKHJRkGkov7EJgfsbN9HK+J/9arm96isBNtDgLB6HGkxXflS+WifgPFXR+XYufaLLikkBNC0cTVYqkbb+LcyucDPI3+7AJLIlcB2aa/Eaa87VhPOIcfUb4l4/oNohBqWSzpmm70ZZk/SKti9N2F4kVdju0EL595Uu3kC7/TMcLB1WzTOcCsJR54RlbxVtlWxNbk2bsAvQbIyHpC8AaB3jDoH4HNQQhRTK4q4Bx')
-          expected_sizes = {'about.html': 165262, 'ai.html': 26678,
-                            'education.html': 154012, 'index.html': 8805, 'work.html': 2759}
-
-          def download(entry):
-              i, name = entry
-              target = pathlib.Path('site') / name
-              target.parent.mkdir(parents=True, exist_ok=True)
-              subprocess.run(['curl', '--fail', '--silent', '--show-error', '--location',
-                              '--retry', '3', '--max-time', '90', '--output', str(target),
-                              origin + quote(name) + '?portfolio-version=36'], check=True)
-              data = target.read_bytes()
-              if name in expected_sizes:
-                  prefix = expected_prefixes[4*i:4*i+4]
-                  extra = len(data) - expected_sizes[name]
-                  if extra > 0 and hashlib.sha256(data).digest()[:4] != prefix:
-                      offsets = {0, expected_sizes[name]}
-                      for pos, byte in enumerate(data[:expected_sizes[name] + 1]):
-                          if byte in (10, 13, 60, 62):
-                              offsets.update((pos, min(pos + 1, expected_sizes[name])))
-                      for offset in sorted(offsets):
-                          candidate = data[:offset] + data[offset + extra:]
-                          if hashlib.sha256(candidate).digest()[:4] == prefix:
-                              data = candidate
-                              target.write_bytes(data)
-                              print(f'Restored original HTML: {name}')
-                              break
-              return hashlib.sha256(data).digest()
-
-          with ThreadPoolExecutor(max_workers=8) as pool:
-              received = list(pool.map(download, enumerate(files)))
-          for i, (name, value) in enumerate(zip(files, received)):
-              if value[:4] != expected_prefixes[4*i:4*i+4]:
-                  print(f'File mismatch: {name} ({(pathlib.Path("site") / name).stat().st_size} bytes)')
-          digest = hashlib.sha256(b''.join(received)).hexdigest()
-          print(f'Checked {len(files)} files: {digest}')
-          if digest != '0c93ba2cd894dcb37b963494f97724ee5496382633bb38f365ee2208dd600af1':
-              raise SystemExit('The downloaded files differ from portfolio version 36.')
-          PY
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add site
-          git commit -m 'Import portfolio version 36'
-          git push origin HEAD:main
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/checkout@v6
+      - run: test -s site/index.html
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: site
-      - uses: actions/deploy-pages@v4
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
