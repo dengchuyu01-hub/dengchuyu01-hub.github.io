@@ -1,0 +1,58 @@
+name: Publish Zoey's portfolio
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['site/**']
+concurrency:
+  group: portfolio-pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: github-pages
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import the verified portfolio snapshot on first run
+        run: |
+          if [ -f site/index.html ]; then exit 0; fi
+          python3 - <<'PY'
+          import base64
+          import gzip
+          import hashlib
+          import pathlib
+          import subprocess
+          from concurrent.futures import ThreadPoolExecutor
+          from urllib.parse import quote
+
+          manifest = 'H4sIAAAAAAACA42Y65biKhCF//e74DSX9PQ8DklKwwwJOUDMeJ7+EKLGy0bPWr1arL0p6yOAgq7dFNmsI/nGWedZ447kdzPV44detF0Xe/uhzfnVR/bJd7/Hw9oUW1NuTbU1q635tTV/bs3vS3N2/k/4Ueu+do7V1oTAYjf1dVl/UMhbM6T6p9ESM9ZOIXodjRtgnqIb+tKfNYcuvkh1sdyLjd4TG/UU3pdUsD6Y3EhDpw80MG/GVHtg3rl9+k8BVveyQ9maLY11UxtYqsRZ+y75c4+iN8lEMdn+nFjviuPxqkPRGt1MPhsbE09v8t6bi7a8PC5ssx7a9O51YtDj3jummGa6d8MhpSJmSR8JznjsRJ67tfP5XU72YHxhafUpvM2zmJCcKt2f2J40nplPJiibGO1lWZST3LiQ/s9kKKaZ09PwopRbF9KDdTPT+/RkB4enLPI9OLq0ts2YsPvJv90Syu4HnwvLfPv8xGGOwwKHJQ4rHK5w+AuHf+LwNw7/gmGOKTmm5JiSY0qOKTmm5JiSY0qOKTmmFJhSYEqBKQWmFJhSYEqBKQWmFJhSYEqJKSWmlJhSYkqJKSWmlJhSYkqJKSWmVJhSYUqFKRWmVJhSYUqFKRWmVJhSYcoKU1aYssKUFaasMGWFKStMWT1Q5g33adM8RzmMChiVMKpgtILRLxjF9X7D6C8U5ZCNQzYO2Thk45CNQzYO2Thk45CNQzYB2QRkE5BNQDYB2QRkE5BNQDYB2QRkk5BNQjYJ2SRkk5BNQjYJ2SRkk5BNQjYF2RRkU5BNQTYF2RRkU5BNQTYF2RRkqyBbBdkqyFZBtgqyVZCtgmyPe18+oATTUvlc+2C5F/91dEpHSNN0IerD2x+yL+zZWLuoB9Noy8LozeH8ifkW4irtmhA+Gnc5KLTUOP8j31GwE9nlN3edXsLa66z69HteHwZnjb6N19a5/ty3ntqStPe6p1BSl9OeGQ4lOZ0mmj8l0dMxjS0xHa0O70y4Qh/LQrFw/6psXy7avy/Z/4+CL4YxNQzNzyZqp2adRDDHJpcIN0eRc7MUaDfDG+ZnI6x6WQIvlBJKFosUWS0AZO1N7Xeeh+I2Lmusbm6lMA3DifWkWzfvwvGyDHO2VptgLiTUmui8OS/bLePB63Zam+tV47KWN/npJvJOXi8h98b25y3lckDevM/irh/Vx97mq56D9i0NuaT7yO/wcdDWkj8tzY68Yyuq1fO6RZmhpb9rAdt+2Osx5Gy5kXqOOnZZSQ0TAnlDacAnqsn7E2um86YG1blzlp70Rg+tTY9xaDrnl89ww53cuTRcadRg8k3FyS31y4MAPVcF9/I6jGWgTcW9l41/Lne/kW/7U0xfDnnq5mHuXHQsPUId81vnUy+TdsQ0mOvwXyLXi70tcv0KuYa65fvjPjRcn/E1NGvf54inMLohmCPlZx/iya6tSHq5CO3v36QCU4IjWTam1UTnZ5iXTJotlqJpws0MzgJcB4uSZ+B/MqFrzbYXAAA='
+          files = gzip.decompress(base64.b64decode(manifest)).decode().splitlines()
+          origin = 'https://chuyudeng.dengchuyu01.chatgpt.site/'
+
+          def download(name):
+              target = pathlib.Path('site') / name
+              target.parent.mkdir(parents=True, exist_ok=True)
+              subprocess.run(['curl', '--fail', '--silent', '--show-error', '--location',
+                              '--retry', '3', '--max-time', '90', '--output', str(target),
+                              origin + quote(name)], check=True)
+              return hashlib.sha256(target.read_bytes()).digest()
+
+          with ThreadPoolExecutor(max_workers=8) as pool:
+              digest = hashlib.sha256(b''.join(pool.map(download, files))).hexdigest()
+          if digest != '0c93ba2cd894dcb37b963494f97724ee5496382633bb38f365ee2208dd600af1':
+              raise SystemExit('The downloaded files differ from portfolio version 36.')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add site
+          git commit -m 'Import portfolio version 36'
+          git push origin HEAD:main
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - uses: actions/deploy-pages@v4
