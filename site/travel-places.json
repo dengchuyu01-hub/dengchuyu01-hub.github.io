@@ -1,0 +1,164 @@
+[
+  {
+    "name": "Penang",
+    "longitude": 100.329,
+    "latitude": 5.414,
+    "country": "Malaysia"
+  },
+  {
+    "name": "Kuala Lumpur",
+    "longitude": 101.6869,
+    "latitude": 3.139,
+    "country": "Malaysia"
+  },
+  {
+    "name": "Bangkok",
+    "longitude": 100.5018,
+    "latitude": 13.7563,
+    "country": "Thailand"
+  },
+  {
+    "name": "Chiang Mai",
+    "longitude": 98.9853,
+    "latitude": 18.7883,
+    "country": "Thailand"
+  },
+  {
+    "name": "Bali",
+    "longitude": 115.13,
+    "latitude": -8.38,
+    "country": "Indonesia"
+  },
+  {
+    "name": "Hakodate",
+    "longitude": 140.7288,
+    "latitude": 41.7687,
+    "country": "Japan"
+  },
+  {
+    "name": "Sapporo",
+    "longitude": 141.3545,
+    "latitude": 43.0618,
+    "country": "Japan"
+  },
+  {
+    "name": "Tokyo",
+    "longitude": 139.6917,
+    "latitude": 35.6895,
+    "country": "Japan"
+  },
+  {
+    "name": "Kyoto",
+    "longitude": 135.7681,
+    "latitude": 35.0116,
+    "country": "Japan"
+  },
+  {
+    "name": "Lake Toya",
+    "longitude": 140.8703,
+    "latitude": 42.6039,
+    "country": "Japan"
+  },
+  {
+    "name": "Osaka",
+    "longitude": 135.5023,
+    "latitude": 34.6937,
+    "country": "Japan"
+  },
+  {
+    "name": "Aomori",
+    "longitude": 140.74,
+    "latitude": 40.8222,
+    "country": "Japan"
+  },
+  {
+    "name": "Lisbon",
+    "longitude": -9.1393,
+    "latitude": 38.7223,
+    "country": "Portugal"
+  },
+  {
+    "name": "Barcelona",
+    "longitude": 2.1734,
+    "latitude": 41.3851,
+    "country": "Spain"
+  },
+  {
+    "name": "Nice",
+    "longitude": 7.262,
+    "latitude": 43.7102,
+    "country": "France"
+  },
+  {
+    "name": "Malmö",
+    "longitude": 13.0038,
+    "latitude": 55.605,
+    "country": "Sweden"
+  },
+  {
+    "name": "Stockholm",
+    "longitude": 18.0686,
+    "latitude": 59.3293,
+    "country": "Sweden"
+  },
+  {
+    "name": "Oslo",
+    "longitude": 10.7522,
+    "latitude": 59.9139,
+    "country": "Norway"
+  },
+  {
+    "name": "Vienna",
+    "longitude": 16.3738,
+    "latitude": 48.2082,
+    "country": "Austria"
+  },
+  {
+    "name": "Reykjavík",
+    "longitude": -21.9426,
+    "latitude": 64.1466,
+    "country": "Iceland"
+  },
+  {
+    "name": "Cambridge",
+    "longitude": 0.1218,
+    "latitude": 52.2053,
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Manchester",
+    "longitude": -2.2426,
+    "latitude": 53.4808,
+    "country": "United Kingdom"
+  },
+  {
+    "name": "London",
+    "longitude": -0.1276,
+    "latitude": 51.5072,
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Guangzhou",
+    "longitude": 113.2644,
+    "latitude": 23.1291,
+    "country": "China"
+  },
+  {
+    "name": "Hong Kong",
+    "longitude": 114.1694,
+    "latitude": 22.3193,
+    "country": "China"
+  },
+  {
+    "name": "Macau",
+    "longitude": 113.5439,
+    "latitude": 22.1987,
+    "country": "China"
+  },
+  {
+    "name": "Puyang",
+    "longitude": 115.0293,
+    "latitude": 35.7617,
+    "country": "China"
+  }
+]
